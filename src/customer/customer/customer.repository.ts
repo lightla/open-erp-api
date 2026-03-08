@@ -8,27 +8,27 @@ import { CustomerEntity } from './entities/customer.entity'
 export class CustomerRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateCustomerDto): Promise<CustomerEntity> {
-    return this.prisma.customer.create({ data })
+  async create(data: CreateCustomerDto): Promise<string> {
+    const result = await this.prisma.customer.create({ data })
+    return result.id
   }
 
   async findAll(): Promise<CustomerEntity[]> {
-    return this.prisma.customer.findMany()
+    return this.prisma.customer.findMany() as unknown as CustomerEntity[]
   }
 
   async findById(id: string): Promise<CustomerEntity | null> {
-    return this.prisma.customer.findUnique({ where: { id } })
+    return this.prisma.customer.findUnique({ where: { id } }) as unknown as CustomerEntity | null
   }
 
-  async update(id: string, data: UpdateCustomerDto): Promise<CustomerEntity> {
-    return this.prisma.customer.update({
+  async update(id: string, data: UpdateCustomerDto): Promise<void> {
+    await this.prisma.customer.update({
       where: { id },
       data,
     })
   }
 
-  async delete(id: string): Promise<CustomerEntity> {
-    return this.prisma.customer.delete({ where: { id } })
+  async delete(id: string): Promise<void> {
+    await this.prisma.customer.delete({ where: { id } })
   }
 }
-

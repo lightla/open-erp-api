@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
-import { OrderProductRepository } from './order-product.repository'
-import { OrderModule } from '../order/order.module'
-import { ProductModule } from '../product/product.module'
+import { OrderProductService } from './order-product.service';
+import { OrderProductController } from './order-product.controller';
+import { OrderProductRepository } from './order-product.repository';
+import { OrderModule } from '../order/order.module';
+import { ProductModule } from '../product/product.module';
 
 @Module({
   imports: [OrderModule, ProductModule],
@@ -9,5 +11,3 @@ import { ProductModule } from '../product/product.module'
   providers: [OrderProductService, OrderProductRepository],
 })
 export class OrderProductModule {}
-
-

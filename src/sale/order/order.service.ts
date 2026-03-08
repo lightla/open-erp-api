@@ -14,6 +14,7 @@ export class OrderService {
     const { customerName, customerId, status, products } = createOrderDto
 
     let orderTotal = 0
+
     const orderItemsData: any[] = []
 
     if (products && products.length > 0) {
@@ -24,6 +25,7 @@ export class OrderService {
         }
 
         const unitPrice = product.price
+
         const totalAmount = unitPrice * item.quantity
         orderTotal += totalAmount
 
@@ -60,7 +62,9 @@ export class OrderService {
   }
 
   async update(id: string, updateData: any) {
-    return this.orderRepository.update(id, updateData)
+    await this.orderRepository.update(id, updateData)
+
+    return id
   }
 
   async remove(id: string) {
@@ -68,5 +72,3 @@ export class OrderService {
     return this.orderRepository.delete(id)
   }
 }
-
-

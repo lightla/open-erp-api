@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common'
 import { CustomerRepository } from './customer.repository'
 import { CreateCustomerDto } from './dto/create-customer.dto'
 import { UpdateCustomerDto } from './dto/update-customer.dto'
@@ -9,12 +9,12 @@ export class CustomerService {
 
   async create(createCustomerDto: CreateCustomerDto) {
     try {
-      return await this.customerRepository.create(createCustomerDto);
+      return await this.customerRepository.create(createCustomerDto)
     } catch (error) {
       if (error.code === 'P2002') {
-        throw new ConflictException('Email này đã tồn tại trong hệ thống');
+        throw new ConflictException('Email này đã tồn tại trong hệ thống')
       }
-      throw error;
+      throw error
     }
   }
 
@@ -23,29 +23,27 @@ export class CustomerService {
   }
 
   async findOne(id: string) {
-    const customer = await this.customerRepository.findById(id);
+    const customer = await this.customerRepository.findById(id)
     if (!customer) {
-      throw new NotFoundException(`Customer with ID ${id} not found`);
+      throw new NotFoundException(`Customer with ID ${id} not found`)
     }
-    return customer;
+    return customer
   }
 
   async update(id: string, updateCustomerDto: UpdateCustomerDto) {
     try {
-      return await this.customerRepository.update(id, updateCustomerDto);
+      return await this.customerRepository.update(id, updateCustomerDto)
     } catch (error) {
-      throw new NotFoundException(`Customer with ID ${id} not found`);
+      throw new NotFoundException(`Customer with ID ${id} not found`)
     }
   }
 
   async remove(id: string) {
     try {
-      await this.customerRepository.delete(id);
+      await this.customerRepository.delete(id)
     } catch (error) {
-      throw new NotFoundException(`Customer with ID ${id} not found`);
+      throw new NotFoundException(`Customer with ID ${id} not found`)
     }
   }
-}
-
 }
 

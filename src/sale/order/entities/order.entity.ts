@@ -6,9 +6,9 @@ export class OrderEntity {
   customerName: string
   totalAmount: number
   status: string
-  customerId?: string
-  customer?: CustomerEntity
-  products?: OrderProductEntity[]
+  customerId: string | null
+  customer: CustomerEntity | null
+  products: OrderProductEntity[]
   createdAt: Date
   updatedAt: Date
 }

@@ -10,7 +10,7 @@ Content-Type: application/json
 
 {
   "name": "Nguyen Van A",
-  "email": "customer_a@example.com",
+  "email": "customer_a1@example.com",
   "phone": "0987654321",
   "address": "Ha Noi, Viet Nam"
 }
@@ -42,18 +42,18 @@ Content-Type: application/json
 
 {
   "customerName": "Nguyen Van A",
-  "customerId": "REPLACE_WITH_CUSTOMER_ID",
+  "customerId": "f1c3a37d-286b-4af2-a471-840586d345e0",
   "status": "pending",
   "products": [
     {
-      "productId": "REPLACE_WITH_PRODUCT_ID",
+      "productId": "836658f6-415a-4f9d-ba93-acd6047c6080",
       "quantity": 2
     }
   ]
 }
 
 ### Get Order Detail (Sẽ thấy Customer ID & Name)
-GET {{baseUrl}}/orders/REPLACE_WITH_ORDER_ID
+GET {{baseUrl}}/orders/33edf8cf-4611-4e75-b572-f3e938bfa942
 
 
 ### --- 4. ORDER PRODUCTS (Cách 2: Thêm lẻ) ---

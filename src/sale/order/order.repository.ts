@@ -6,19 +6,17 @@ import { OrderEntity } from './entities/order.entity'
 export class OrderRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: any): Promise<OrderEntity> {
-    return this.prisma.order.create({
+  async create(data: any): Promise<string> {
+    const result = await this.prisma.order.create({
       data,
-      include: {
-        products: true,
-      },
     })
+    return result.id
   }
 
   async findAll(): Promise<OrderEntity[]> {
     return this.prisma.order.findMany({
       include: { products: true },
-    })
+    }) as unknown as OrderEntity[]
   }
 
   async findById(id: string): Promise<OrderEntity | null> {
@@ -30,14 +28,13 @@ export class OrderRepository {
           include: { product: true },
         },
       },
-    })
+    }) as unknown as OrderEntity | null
   }
 
-  async update(id: string, data: any): Promise<OrderEntity> {
-    return this.prisma.order.update({
+  async update(id: string, data: any): Promise<void> {
+    await this.prisma.order.update({
       where: { id },
       data,
-      include: { products: true },
     })
   }
 
@@ -45,8 +42,7 @@ export class OrderRepository {
     await this.prisma.orderProduct.deleteMany({ where: { orderId } })
   }
 
-  async delete(id: string): Promise<OrderEntity> {
-    return this.prisma.order.delete({ where: { id } })
+  async delete(id: string): Promise<void> {
+    await this.prisma.order.delete({ where: { id } })
   }
 }
-

@@ -56,15 +56,15 @@ export class OrderProductService {
   }
 
   async update(id: string, updateOrderProductDto: UpdateOrderProductDto) {
-    const item = await this.orderProductRepository.update(id, updateOrderProductDto)
-    await this.recalculateOrderTotal(item.orderId)
-    return item
+    const existing = await this.findOne(id);
+    await this.orderProductRepository.update(id, updateOrderProductDto);
+    await this.recalculateOrderTotal(existing.orderId);
   }
 
   async remove(id: string) {
-    const item = await this.orderProductRepository.delete(id)
-    await this.recalculateOrderTotal(item.orderId)
-    return item
+    const existing = await this.findOne(id);
+    await this.orderProductRepository.delete(id);
+    await this.recalculateOrderTotal(existing.orderId);
   }
 
   private async recalculateOrderTotal(orderId: string) {

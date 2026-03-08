@@ -8,27 +8,27 @@ import { ProductEntity } from './entities/product.entity'
 export class ProductRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateProductDto): Promise<ProductEntity> {
-    return this.prisma.product.create({ data })
+  async create(data: CreateProductDto): Promise<string> {
+    const result = await this.prisma.product.create({ data })
+    return result.id
   }
 
   async findAll(): Promise<ProductEntity[]> {
-    return this.prisma.product.findMany()
+    return this.prisma.product.findMany() as unknown as ProductEntity[]
   }
 
   async findById(id: string): Promise<ProductEntity | null> {
-    return this.prisma.product.findUnique({ where: { id } })
+    return this.prisma.product.findUnique({ where: { id } }) as unknown as ProductEntity | null
   }
 
-  async update(id: string, data: UpdateProductDto): Promise<ProductEntity> {
-    return this.prisma.product.update({
+  async update(id: string, data: UpdateProductDto): Promise<void> {
+    await this.prisma.product.update({
       where: { id },
       data,
     })
   }
 
-  async delete(id: string): Promise<ProductEntity> {
-    return this.prisma.product.delete({ where: { id } })
+  async delete(id: string): Promise<void> {
+    await this.prisma.product.delete({ where: { id } })
   }
 }
-
