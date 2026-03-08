@@ -12,13 +12,18 @@ export class OrderProductService {
 
     // 1. Kiểm tra Order & Product tồn tại
     const order = await this.prisma.order.findUnique({ where: { id: orderId } })
-    if (!order) throw new NotFoundException(`Order with ID ${orderId} not found`)
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${orderId} not found`)
+    }
 
     const product = await this.prisma.product.findUnique({ where: { id: productId } })
-    if (!product) throw new NotFoundException(`Product with ID ${productId} not found`)
-
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${productId} not found`)
+    }
+    
     // 2. Tính toán tiền
     const unitPrice = product.price
+
     const totalAmount = unitPrice * quantity
 
     // 3. Tạo OrderProduct
@@ -49,7 +54,9 @@ export class OrderProductService {
       where: { id },
       include: { product: true },
     })
-    if (!item) throw new NotFoundException(`OrderProduct with ID ${id} not found`)
+    if (!item) {
+      throw new NotFoundException(`OrderProduct with ID ${id} not found`)
+    }
     return item
   }
 
@@ -72,6 +79,7 @@ export class OrderProductService {
     const allItems = await this.prisma.orderProduct.findMany({
       where: { orderId },
     })
+
     const total = allItems.reduce((acc, curr) => acc + curr.totalAmount, 0)
 
     await this.prisma.order.update({
