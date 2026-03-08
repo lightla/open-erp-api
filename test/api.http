@@ -1,91 +1,59 @@
 ### Config
 @baseUrl = http://localhost:3001/api
 
-### --- CUSTOMERS ---
-
-### Create Customer
-POST {{baseUrl}}/customers
+### --- PRODUCTS ---
+### Create Product 1
+POST {{baseUrl}}/products
 Content-Type: application/json
 
 {
-  "name": "John Doe",
-  "email": "john@example.com",
-  "phone": "0123456789",
-  "address": "123 Main St"
+  "productName": "Laptop Dell XPS 15",
+  "productType": "Electronics",
+  "price": 2500
 }
 
-### Get All Customers
-GET {{baseUrl}}/customers
-
-### Get Single Customer (Replace ID)
-GET {{baseUrl}}/customers/ba5578ca-6c9d-45e3-a1f9-288e190ea8a8
-
-### Update Customer (Replace ID)
-PATCH {{baseUrl}}/customers/REPLACE_WITH_ID
+### Create Product 2
+POST {{baseUrl}}/products
 Content-Type: application/json
 
 {
-  "name": "John Updated"
+  "productName": "Mouse Logitech G502",
+  "productType": "Accessories",
+  "price": 50
 }
 
-### Delete Customer (Replace ID)
-DELETE {{baseUrl}}/customers/REPLACE_WITH_ID
-
-
-### --- ORDERS ---
-
-### Create Order
+### --- ORDERS (Cách 1: Tạo kèm sản phẩm) ---
+### Create Order with Items
 POST {{baseUrl}}/orders
 Content-Type: application/json
 
 {
   "customerName": "John Doe",
-  "totalAmount": 1500.50,
-  "status": "pending"
+  "status": "pending",
+  "items": [
+    {
+      "productId": "c10ae264-a3e0-4e77-a709-9f6062f7c90e",
+      "quantity": 1
+    },
+    {
+      "productId": "855b6075-61d6-4196-80ed-60ae2b55a942",
+      "quantity": 2
+    }
+  ]
 }
 
-### Get All Orders
-GET {{baseUrl}}/orders
 
-### Get Single Order (Replace ID)
-GET {{baseUrl}}/orders/REPLACE_WITH_ID
+### --- ORDER PRODUCTS (Cách 2: Thêm sản phẩm vào đơn đã có) ---
 
-### Update Order (Replace ID)
-PATCH {{baseUrl}}/orders/REPLACE_WITH_ID
+### Add Item to Existing Order
+POST {{baseUrl}}/order-products
 Content-Type: application/json
 
 {
-  "status": "completed"
+  "orderId": "dbc53067-61df-428e-951b-32e50a109ba2",
+  "productId": "855b6075-61d6-4196-80ed-60ae2b55a942",
+  "quantity": 5
 }
 
-### Delete Order (Replace ID)
-DELETE {{baseUrl}}/orders/REPLACE_WITH_ID
-
-
-### --- PRODUCTS ---
-
-### Create Product
-POST {{baseUrl}}/products
-Content-Type: application/json
-
-{
-  "productName": "Laptop Dell",
-  "productType": "Electronics"
-}
-
-### Get All Products
-GET {{baseUrl}}/products
-
-### Get Single Product (Replace ID)
-GET {{baseUrl}}/products/REPLACE_WITH_ID
-
-### Update Product (Replace ID)
-PATCH {{baseUrl}}/products/REPLACE_WITH_ID
-Content-Type: application/json
-
-{
-  "productName": "Laptop Dell XPS"
-}
-
-### Delete Product (Replace ID)
-DELETE {{baseUrl}}/products/REPLACE_WITH_ID
+### Get Order Detail (Để xem tổng tiền tự cập nhật)
+GET {{baseUrl}}/orders/dbc53067-61df-428e-951b-32e50a109ba2

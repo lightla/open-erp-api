@@ -1,12 +1,18 @@
-import { IsNumber, IsOptional, IsString, Min } from 'class-validator'
+import { IsArray, IsNumber, IsOptional, IsString, Min, ValidateNested } from 'class-validator'
+import { Type } from 'class-transformer'
+
+class CreateOrderItemDto {
+  @IsString()
+  productId: string
+
+  @IsNumber()
+  @Min(1)
+  quantity: number
+}
 
 export class CreateOrderDto {
   @IsString()
   customerName: string
-
-  @IsNumber()
-  @Min(0, { message: 'Tổng tiền không được nhỏ hơn 0' })
-  totalAmount: number
 
   @IsString()
   @IsOptional()
@@ -15,4 +21,10 @@ export class CreateOrderDto {
   @IsString()
   @IsOptional()
   status?: string
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateOrderItemDto)
+  @IsOptional()
+  items?: CreateOrderItemDto[]
 }

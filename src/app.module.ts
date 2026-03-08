@@ -8,6 +8,7 @@ import { PrismaModule } from './prisma/prisma.module'
 import { ProductModule } from './sale/product/product.module'
 import { OrderModule } from './sale/order/order.module'
 import { CustomerModule } from './customer/customer/customer.module'
+import { OrderProductModule } from './sale/order-product/order-product.module'
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,6 +21,7 @@ import { CustomerModule } from './customer/customer/customer.module'
     ProductModule,
     OrderModule,
     CustomerModule,
+    OrderProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],

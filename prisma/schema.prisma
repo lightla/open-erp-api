@@ -26,23 +26,45 @@ model Customer {
 }
 
 model Order {
-  id           String   @id @default(uuid())
+  id           String         @id @default(uuid())
   customerName String
-  totalAmount  Float
-  status       String   @default("pending")
+  totalAmount  Float          @default(0)
+  status       String         @default("pending")
   
-  // Quan hệ với Customer
   customerId   String?
-  customer     Customer? @relation(fields: [customerId], references: [id])
+  customer     Customer?      @relation(fields: [customerId], references: [id])
   
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  products     OrderProduct[]
+  
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 }
 
 model Product {
-  id          String   @id @default(uuid())
+  id          String         @id @default(uuid())
   productName String
   productType String
+  price       Float          @default(0)
+  
+  orderItems  OrderProduct[]
+  
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model OrderProduct {
+  id          String   @id @default(uuid())
+  quantity    Int
+  unitPrice   Float
+  totalAmount Float
+  
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id])
+  
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+

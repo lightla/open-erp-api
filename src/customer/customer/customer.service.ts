@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+
 import { PrismaService } from '../../prisma/prisma.service'
 import { CreateCustomerDto } from './dto/create-customer.dto'
 import { UpdateCustomerDto } from './dto/update-customer.dto'
@@ -8,10 +9,19 @@ export class CustomerService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createCustomerDto: CreateCustomerDto) {
-    return this.prisma.customer.create({
-      data: createCustomerDto,
-    })
+    try {
+      return await this.prisma.customer.create({
+        data: createCustomerDto,
+      });
+    } catch (error) {
+      // P2002 là mã lỗi của Prisma khi vi phạm ràng buộc Unique (Unique constraint failed)
+      if (error.code === 'P2002') {
+        throw new ConflictException('Email này đã tồn tại trong hệ thống');
+      }
+      throw error;
+    }
   }
+
 
   async findAll() {
     return this.prisma.customer.findMany()
