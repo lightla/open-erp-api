@@ -1,59 +1,54 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { PrismaService } from '../../prisma/prisma.service'
+import { OrderProductRepository } from './order-product.repository'
 import { CreateOrderProductDto } from './dto/create-order-product.dto'
 import { UpdateOrderProductDto } from './dto/update-order-product.dto'
+import { OrderRepository } from '../order/order.repository'
+import { ProductRepository } from '../product/product.repository'
 
 @Injectable()
 export class OrderProductService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly orderProductRepository: OrderProductRepository,
+    private readonly orderRepository: OrderRepository,
+    private readonly productRepository: ProductRepository,
+  ) {}
 
   async create(createOrderProductDto: CreateOrderProductDto) {
     const { orderId, productId, quantity } = createOrderProductDto
 
-    // 1. Kiểm tra Order & Product tồn tại
-    const order = await this.prisma.order.findUnique({ where: { id: orderId } })
+    const order = await this.orderRepository.findById(orderId)
     if (!order) {
       throw new NotFoundException(`Order with ID ${orderId} not found`)
     }
-
-    const product = await this.prisma.product.findUnique({ where: { id: productId } })
+    
+    const product = await this.productRepository.findById(productId)
     if (!product) {
       throw new NotFoundException(`Product with ID ${productId} not found`)
     }
-    
-    // 2. Tính toán tiền
+
     const unitPrice = product.price
 
     const totalAmount = unitPrice * quantity
 
-    // 3. Tạo OrderProduct
-    const orderProduct = await this.prisma.orderProduct.create({
-      data: {
-        orderId,
-        productId,
-        quantity,
-        unitPrice,
-        totalAmount,
-      },
+    const orderProduct = await this.orderProductRepository.create({
+      orderId,
+      productId,
+      quantity,
+      unitPrice,
+      totalAmount,
     })
 
-    // 4. Cập nhật lại tổng tiền của Order
-    await this.updateOrderTotal(orderId)
-
+    await this.recalculateOrderTotal(orderId)
+    
     return orderProduct
   }
 
   async findAll() {
-    return this.prisma.orderProduct.findMany({
-      include: { product: true },
-    })
+    return this.orderProductRepository.findAll()
   }
 
   async findOne(id: string) {
-    const item = await this.prisma.orderProduct.findUnique({
-      where: { id },
-      include: { product: true },
-    })
+    const item = await this.orderProductRepository.findById(id)
     if (!item) {
       throw new NotFoundException(`OrderProduct with ID ${id} not found`)
     }
@@ -61,31 +56,22 @@ export class OrderProductService {
   }
 
   async update(id: string, updateOrderProductDto: UpdateOrderProductDto) {
-    const item = await this.prisma.orderProduct.update({
-      where: { id },
-      data: updateOrderProductDto,
-    })
-    await this.updateOrderTotal(item.orderId)
+    const item = await this.orderProductRepository.update(id, updateOrderProductDto)
+    await this.recalculateOrderTotal(item.orderId)
     return item
   }
 
   async remove(id: string) {
-    const item = await this.prisma.orderProduct.delete({ where: { id } })
-    await this.updateOrderTotal(item.orderId)
+    const item = await this.orderProductRepository.delete(id)
+    await this.recalculateOrderTotal(item.orderId)
     return item
   }
 
-  private async updateOrderTotal(orderId: string) {
-    const allItems = await this.prisma.orderProduct.findMany({
-      where: { orderId },
-    })
+  private async recalculateOrderTotal(orderId: string) {
+    const allItems = await this.orderProductRepository.findByOrderId(orderId)
 
     const total = allItems.reduce((acc, curr) => acc + curr.totalAmount, 0)
-
-    await this.prisma.order.update({
-      where: { id: orderId },
-      data: { totalAmount: total },
-    })
+    await this.orderProductRepository.updateOrderTotal(orderId, total)
   }
 }
 

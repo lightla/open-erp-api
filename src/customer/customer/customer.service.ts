@@ -1,20 +1,16 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-
-import { PrismaService } from '../../prisma/prisma.service'
+import { CustomerRepository } from './customer.repository'
 import { CreateCustomerDto } from './dto/create-customer.dto'
 import { UpdateCustomerDto } from './dto/update-customer.dto'
 
 @Injectable()
 export class CustomerService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly customerRepository: CustomerRepository) {}
 
   async create(createCustomerDto: CreateCustomerDto) {
     try {
-      return await this.prisma.customer.create({
-        data: createCustomerDto,
-      });
+      return await this.customerRepository.create(createCustomerDto);
     } catch (error) {
-      // P2002 là mã lỗi của Prisma khi vi phạm ràng buộc Unique (Unique constraint failed)
       if (error.code === 'P2002') {
         throw new ConflictException('Email này đã tồn tại trong hệ thống');
       }
@@ -22,40 +18,34 @@ export class CustomerService {
     }
   }
 
-
   async findAll() {
-    return this.prisma.customer.findMany()
+    return this.customerRepository.findAll()
   }
 
   async findOne(id: string) {
-    const customer = await this.prisma.customer.findUnique({
-      where: { id },
-    })
+    const customer = await this.customerRepository.findById(id);
     if (!customer) {
-      throw new NotFoundException(`Customer with ID ${id} not found`)
+      throw new NotFoundException(`Customer with ID ${id} not found`);
     }
-    return customer
+    return customer;
   }
 
   async update(id: string, updateCustomerDto: UpdateCustomerDto) {
     try {
-      return await this.prisma.customer.update({
-        where: { id },
-        data: updateCustomerDto,
-      })
+      return await this.customerRepository.update(id, updateCustomerDto);
     } catch (error) {
-      throw new NotFoundException(`Customer with ID ${id} not found`)
+      throw new NotFoundException(`Customer with ID ${id} not found`);
     }
   }
 
   async remove(id: string) {
     try {
-      await this.prisma.customer.delete({
-        where: { id },
-      })
+      await this.customerRepository.delete(id);
     } catch (error) {
-      throw new NotFoundException(`Customer with ID ${id} not found`)
+      throw new NotFoundException(`Customer with ID ${id} not found`);
     }
   }
+}
+
 }
 
