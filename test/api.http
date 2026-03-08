@@ -1,59 +1,69 @@
 ### Config
 @baseUrl = http://localhost:3001/api
 
-### --- PRODUCTS ---
-### Create Product 1
+### --- 1. CUSTOMERS ---
+
+### Create Customer
+# @name createCustomer
+POST {{baseUrl}}/customers
+Content-Type: application/json
+
+{
+  "name": "Nguyen Van A",
+  "email": "customer_a@example.com",
+  "phone": "0987654321",
+  "address": "Ha Noi, Viet Nam"
+}
+
+### Get All Customers
+GET {{baseUrl}}/customers
+
+
+### --- 2. PRODUCTS ---
+
+### Create Product
+# @name createProduct
 POST {{baseUrl}}/products
 Content-Type: application/json
 
 {
-  "productName": "Laptop Dell XPS 15",
-  "productType": "Electronics",
-  "price": 2500
+  "productName": "Iphone 15 Pro Max",
+  "productType": "Smartphone",
+  "price": 1200
 }
 
-### Create Product 2
-POST {{baseUrl}}/products
-Content-Type: application/json
 
-{
-  "productName": "Mouse Logitech G502",
-  "productType": "Accessories",
-  "price": 50
-}
+### --- 3. ORDERS (Gán Customer & Thêm sản phẩm) ---
 
-### --- ORDERS (Cách 1: Tạo kèm sản phẩm) ---
-### Create Order with Items
+### Create Order with Customer and Products
+# Thay thế customerId và productId bằng ID thật từ các bước trên
 POST {{baseUrl}}/orders
 Content-Type: application/json
 
 {
-  "customerName": "John Doe",
+  "customerName": "Nguyen Van A",
+  "customerId": "REPLACE_WITH_CUSTOMER_ID",
   "status": "pending",
-  "items": [
+  "products": [
     {
-      "productId": "c10ae264-a3e0-4e77-a709-9f6062f7c90e",
-      "quantity": 1
-    },
-    {
-      "productId": "855b6075-61d6-4196-80ed-60ae2b55a942",
+      "productId": "REPLACE_WITH_PRODUCT_ID",
       "quantity": 2
     }
   ]
 }
 
+### Get Order Detail (Sẽ thấy Customer ID & Name)
+GET {{baseUrl}}/orders/REPLACE_WITH_ORDER_ID
 
-### --- ORDER PRODUCTS (Cách 2: Thêm sản phẩm vào đơn đã có) ---
+
+### --- 4. ORDER PRODUCTS (Cách 2: Thêm lẻ) ---
 
 ### Add Item to Existing Order
 POST {{baseUrl}}/order-products
 Content-Type: application/json
 
 {
-  "orderId": "dbc53067-61df-428e-951b-32e50a109ba2",
-  "productId": "855b6075-61d6-4196-80ed-60ae2b55a942",
+  "orderId": "REPLACE_WITH_ORDER_ID",
+  "productId": "REPLACE_WITH_PRODUCT_ID",
   "quantity": 5
 }
-
-### Get Order Detail (Để xem tổng tiền tự cập nhật)
-GET {{baseUrl}}/orders/dbc53067-61df-428e-951b-32e50a109ba2

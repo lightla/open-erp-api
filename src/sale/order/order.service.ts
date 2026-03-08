@@ -7,14 +7,14 @@ export class OrderService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createOrderDto: CreateOrderDto) {
-    const { customerName, customerId, status, items } = createOrderDto
+    const { customerName, customerId, status, products } = createOrderDto
 
-    // 1. Nếu có items, tính toán giá trị và tạo nested
+    // 1. Nếu có products, tính toán giá trị và tạo nested
     let orderTotal = 0
     const orderItemsData: any[] = []
 
-    if (items && items.length > 0) {
-      for (const item of items) {
+    if (products && products.length > 0) {
+      for (const item of products) {
         const product = await this.prisma.product.findUnique({
           where: { id: item.productId },
         })
@@ -35,7 +35,7 @@ export class OrderService {
       }
     }
 
-    // 2. Tạo Order (có hoặc không có items)
+    // 2. Tạo Order (có hoặc không có products)
     return this.prisma.order.create({
       data: {
         customerName,
@@ -61,7 +61,12 @@ export class OrderService {
   async findOne(id: string) {
     const order = await this.prisma.order.findUnique({
       where: { id },
-      include: { products: { include: { product: true } } },
+      include: { 
+        customer: true, // Lấy thông tin Customer
+        products: { 
+          include: { product: true } // Lấy thông tin từng sản phẩm trong đơn
+        } 
+      },
     })
     if (!order) {
       throw new NotFoundException(`Order with ID ${id} not found`)
