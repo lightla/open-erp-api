@@ -19,7 +19,7 @@ async function bootstrap() {
   fs.writeFileSync('./swagger.json', JSON.stringify(document, null, 2))
 
   SwaggerModule.setup('api', app, document)
-  
+
   // 1. Kích hoạt Validation Toàn Cục
   // Dữ liệu không hợp lệ sẽ bị tự động từ chối với mã lỗi 400
   app.useGlobalPipes(
@@ -33,19 +33,21 @@ async function bootstrap() {
   // 2. Thêm tiền tố API (VD: http://localhost:3000/api/customers)
   app.setGlobalPrefix('api')
 
+  const configService = app.get(ConfigService)
+
+  const appPort = configService.get<number>('APP_PORT', 3000)
+  const appHost = configService.get<string>('APP_HOST', 'http://localhost')
+
   // 3. Kích hoạt CORS
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: `${appHost}:${appPort}`,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   })
 
-  const configService = app.get(ConfigService)
-
-  const appPort = configService.get<number>('APP_PORT', 3000)
-  
   await app.listen(appPort)
-  console.log(`🚀 API is running on: http://localhost:${appPort}/api`)
+
+  console.log(`🚀 API is running on: ${appHost}:${appPort}/api`)
 }
 
 bootstrap()

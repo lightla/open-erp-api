@@ -5,7 +5,7 @@ import { UpdateCustomerDto } from './dto/update-customer.dto'
 
 @Injectable()
 export class CustomerService {
-  constructor(private readonly customerRepository: CustomerRepository) {}
+  constructor(private readonly customerRepository: CustomerRepository) { }
 
   async create(createCustomerDto: CreateCustomerDto) {
     try {

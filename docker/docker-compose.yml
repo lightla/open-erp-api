@@ -4,10 +4,10 @@ services:
     container_name: open_erp_db
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: open_erp
       POSTGRES_DB: open_erp
     ports:
-      - "5439:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     networks:
       - open_erp_network
     volumes:

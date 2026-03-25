@@ -1,5 +1,5 @@
 ### Config
-@baseUrl = http://localhost:3001/api
+@baseUrl = http://localhost:3002/api
 
 ### --- 1. CUSTOMERS ---
 
@@ -10,7 +10,7 @@ Content-Type: application/json
 
 {
   "name": "Nguyen Van A",
-  "email": "customer_a1@example.com",
+  "email": "customer_a12@example.com",
   "phone": "0987654321",
   "address": "Ha Noi, Viet Nam"
 }
