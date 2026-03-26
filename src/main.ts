@@ -37,10 +37,29 @@ async function bootstrap() {
 
   const appPort = configService.get<number>('APP_PORT', 3000)
   const appHost = configService.get<string>('APP_HOST', 'http://localhost')
+  const webUrl = configService.get<string>('WEB_URL')
+  const allowedOrigins = new Set(
+    [
+      webUrl,
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3003',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:3001',
+      'http://127.0.0.1:3003',
+    ].filter((origin): origin is string => Boolean(origin)),
+  )
 
   // 3. Kích hoạt CORS
   app.enableCors({
-    origin: `${appHost}:${appPort}`,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.has(origin)) {
+        callback(null, true)
+        return
+      }
+
+      callback(new Error(`Origin ${origin} not allowed by CORS`), false)
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   })

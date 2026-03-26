@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { ConfigModule } from '@nestjs/config'
+import { AuthModule } from './auth/auth.module'
 import { UserModule } from './user/user/user.module'
 import { UserDeviceModule } from './user/user-device/user-device.module'
 import { PrismaModule } from './prisma/prisma.module'
@@ -15,6 +16,7 @@ import { OrderProductModule } from './sale/order-product/order-product.module'
       isGlobal: true,
       envFilePath: '.env',
     }),
+    AuthModule,
     UserModule,
     UserDeviceModule,
     PrismaModule,
