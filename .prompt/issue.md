@@ -1,4 +1,2 @@
 
-BUG: Icon need center, same vertial line and size with home icon
-
-![alt text](image-9.png)
+FEATURE 1. có hr rồi nhưng cần rõ ràng hơn, mờ quá không rõ block 
